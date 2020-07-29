@@ -284,23 +284,14 @@ def genText(tokenizer,model,args,length,num,prompt_text):
 
     return generated_sequences
 
-# def mian():
-    
 
 # if __name__ == "__main__":
 #     # mian()
-#     gpt_t,gpt_m,gpt_a = preLoadGpt2()
+#     # gpt_t,gpt_m,gpt_a = preLoadGpt2()
 #     ctrl_t,ctrl_m,ctrl_a = preLoadCtrl()
 
-#     Text = genText(gpt_t,gpt_m,gpt_a,200,2,'china')
+#     # Text = genText(gpt_t,gpt_m,gpt_a,200,2,'china')
 
-#     Text = genText(ctrl_t,ctrl_m,ctrl_a,200,2,'china')
+#     Text = genText(ctrl_t,ctrl_m,ctrl_a,100,1,'I like watching tv ')
 
-# --model_type=gpt2 --length=200 --model_name_or_path=gpt2 --num_return_sequences=1
-# python ./examples/text-generation/run_generation.py \
-#     --model_type=ctrl \
-#     --length=20 \
-#     --model_name_or_path=ctrl \
-
-#     --temperature=0 \
-#     --repetition_penalty=1.2 \
+#     print(Text)

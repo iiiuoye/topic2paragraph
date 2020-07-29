@@ -1,0 +1,3 @@
+2020-07-24 09:48:47,163 INFO: Topic to paragraph generator engine started SUCCESSFULLY!!!
+2020-07-24 09:49:03,176 INFO: {"title": "I like watching tv ", "length": "100", "nums": "1"}
+2020-07-24 09:49:03,176 INFO: {'title': 'I like watching tv ', 'length': '100', 'nums': '1'}

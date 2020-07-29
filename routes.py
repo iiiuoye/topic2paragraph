@@ -9,27 +9,23 @@ from tools import Logger
 from transformers.run_generation import preLoadCtrl, preLoadGpt2, genText
 
 
-ctrl_t, ctrl_m, ctrl_a = None, None, None
-gpt_t, gpt_m, gpt_a = None, None, None
-topic_engine_flag = 0
-
 def split_combine_text(text_ctrl, text_gpt2):
     """
     处理模型返回的文本
     """
-    id = 0
+    # id = 0
     def combine_text(title_list, body_list, nums):
         text_list = []
-        nonlocal id
+        # nonlocal id
         for i in range(nums):
             text_dic = {}
-            text_dic["id"] = id
+            # text_dic["id"] = id
             text_dic["title"] = title_list[i]
             body = body_list[i].replace("\n", "")
             body = body.replace("\u2019", "'").replace("\u201c", "\"").replace("\u2019", "\"")
             text_dic["text"] = body[:body.rfind(".") + 1]
             text_list.append(text_dic)
-            id += 1
+            # id += 1
         return text_list
 
     title_ctrl_list = []
@@ -54,12 +50,10 @@ def split_combine_text(text_ctrl, text_gpt2):
                                      len(text_gpt2))
     return combine_ctrl_list + combine_gpt2_list
 
-def start_gen_engine():
-    """
-    加载GPT2和CTRL模型
-    """
+
+def create_routes():
+    bp = Blueprint(__name__, 'nurture')
     loggre = Logger()
-    global gpt_t, gpt_m, gpt_a, ctrl_t, ctrl_m, ctrl_a, topic_engine_flag
 
     try:
         gpt_t, gpt_m, gpt_a = preLoadGpt2()
@@ -67,19 +61,10 @@ def start_gen_engine():
         topic_engine_flag = 1
         loggre.info(
             'Topic to paragraph generator engine started SUCCESSFULLY!!!')
-    except:
+    except Exception as e:
         loggre.error(
             'Topic to paragraph generator engine loadedERROR!!!')
-        return jsonify(
-            code=1202002,
-            msg='Topic to paragraph generator engine loaded ERROR!!!!'
-        ), 200
-
-def create_routes():
-    bp = Blueprint(__name__, 'nurture')
-    loggre = Logger()
-
-    start_gen_engine()
+        raise(e)
 
     def exception_handler(func):
         def wrapper(*args, **kwargs):
@@ -138,17 +123,19 @@ def create_routes():
         length=int(body['length'])
         nums=int(body['nums'])
 
-        global gpt_t, gpt_m, gpt_a, ctrl_t, ctrl_m, ctrl_a
-
         if topic_engine_flag == 1:
+
             ctrl_sample_nums = int(nums / 1.5) + nums % 2
             gpt2_sample_nums = nums - ctrl_sample_nums
+
             text_ctrl = genText(ctrl_t, ctrl_m, ctrl_a, length,
                                 ctrl_sample_nums, "News " + title)
-
-            text_gpt2 = genText(gpt_t, gpt_m, gpt_a, length,
-                                gpt2_sample_nums, title + " | ")
-
+            print(text_ctrl)
+            if gpt2_sample_nums != 0:
+                text_gpt2 = genText(gpt_t, gpt_m, gpt_a, length,
+                                    gpt2_sample_nums, title + " | ")
+            else:
+                text_gpt2 = []
             text_list = split_combine_text(text_ctrl, text_gpt2)
             return jsonify(code=0, msg=0, data=text_list), 200
         else:
